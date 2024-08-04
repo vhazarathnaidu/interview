@@ -1,0 +1,8 @@
+Terraform dynamic Blocks
+
+
+
+Elasticsearch
+Transitgatway
+Including A/B, Canary, Blue/Green deployment patterns.
+Control tower
