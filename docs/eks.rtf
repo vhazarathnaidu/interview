@@ -1,0 +1,250 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2639
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;\red12\green12\blue12;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\cssrgb\c5098\c5098\c5098;\cssrgb\c100000\c100000\c100000;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{none\}}{\leveltext\leveltemplateid1\'00;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\margl1440\margr1440\vieww28600\viewh17440\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs26 \cf0 Create EKS High -Level\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+1. Create AWS role with EKS\
+2. Create Ec2 and Attach execution role to Ec2\
+3. Login to Ec2 and install EKCTL and Kubectl\
+4. Install zip and awscli latest version\
+Download kubectl dial curl command and downloaded in \'93/tmp\'94 folder\
+\'93mv /tmp/kubectl /usr/local/bin\'94 to access anywhere\
+5. Create Cluster \
+6. Create Node Group\
+7. Create yaml and deploy  
+\fs24 \
+\
+\
+\
+
+\fs26 Create EKS\
+\'97\'97\'97\'97\'97\'97\'97-\
+\
+1. Create VPC and 2 public subnets\
+2. Create Key-pair (Name = dev)\
+3. Create AWS EKS cluster role (dev-cluster-role)\
+4. Create AWS EKS worker node (dev-cluster-worker-node-role)\
+	Attach below policies\
+	AWSEKSWorkerNodePolicy\
+	AWSEC2ContainerRegistryReadOnly\
+	AWSEKSCNIPolicy\
+5. Create AWS EKS cluster (dev-cluster)\
+6. Create Node group (dev-cluster-worker-node) \
+	Go the cluster that you created -> Add Node Group	\
+7. Awscli configure\
+8. aws eke update-kubeconfig \'97name dev-cluster \'97region us-east-1\
+9. Check whether pods are running\
+	kubectl get pods\
+\
+For deploy\
+\'97\'97\'97\'97\'97\'97\
+1. Create somename-pod.yaml or get k8s yaml\
+2. Kubectl apply -f somename-pod.yaml\
+3. Create pod-service.yaml for external endpoint (use describe command to verify service: kubectl describe sec service-name)\
+ \
+\
+For deleteing \
+\'97\'97\'97\'97\'97\'97\
+	delete pod\
+	delete sec\
+	delete node group\
+	delete cluster\
+\
+\
+\
+\
+Create pod and deploy Prometheus for monitoring logs for all pods\
+\
+\
+\
+Creating and deploying an Amazon Elastic Kubernetes Service (EKS) cluster involves several steps. Here's a general guide to get you started:\
+\
+1. **Prerequisites:**\
+   - An AWS account with appropriate permissions.\
+   - AWS CLI (Command Line Interface) installed and configured.\
+   - kubectl installed.\
+   - eksctl installed (optional but recommended).\
+\
+2. **Create an IAM Role:**\
+   - Create an IAM role with permissions required for EKS. You can use the `eksctl` CLI tool to create this role automatically.\
+\
+3. **Create a VPC (Virtual Private Cloud):**\
+   - Create a VPC with subnets across multiple availability zones.\
+\
+4. **Install eksctl (optional but recommended):**\
+   - eksctl is a simple command-line utility for creating and managing Kubernetes clusters on EKS.\
+   - You can install it via Homebrew or download it from GitHub.\
+\
+5. **Create the EKS Cluster:**\
+   - You can create the EKS cluster using either eksctl or the AWS Management Console.\
+   - Using eksctl:\
+     ```bash\
+     eksctl create cluster --name my-cluster --version 1.21 --nodegroup-name standard-workers --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed\
+     ```\
+   - This command creates an EKS cluster named "my-cluster" with a managed node group of t3.medium instances.\
+\
+6. **Configure kubectl:**\
+   - Once the cluster is created, you need to configure kubectl to communicate with your EKS cluster.\
+     ```bash\
+     aws eks --region region-code update-kubeconfig --name my-cluster\
+     ```\
+\
+7. **Test the Cluster:**\
+   - Run `kubectl get svc` to verify that you can communicate with the cluster.\
+\
+8. **Deploy Applications:**\
+   - Now that your cluster is ready, you can start deploying applications using Kubernetes manifests or Helm charts.\
+\
+9. **Scaling and Maintenance:**\
+   - EKS allows you to scale your cluster by adding or removing nodes as needed. You can also perform maintenance tasks like upgrading the Kubernetes version or scaling node groups.\
+\
+10. **Security and Monitoring:**\
+    - Implement security best practices such as IAM roles for service accounts (IRSA), network policies, and encryption.\
+    - Set up monitoring and logging using tools like CloudWatch, Prometheus, and Grafana.\
+\
+11. **Cost Management:**\
+    - Monitor your usage and optimize resources to manage costs effectively.\
+\
+12. **Delete the Cluster (Optional):**\
+    - When you no longer need the cluster, remember to delete it to avoid incurring unnecessary costs.\
+    ```bash\
+    eksctl delete cluster --name my-cluster\
+    ```\
+\
+This is a simplified overview of creating and deploying an EKS cluster. Depending on your specific requirements, you may need to customize these steps further. Always refer to the official AWS documentation for the most up-to-date and detailed information.\
+\
+\
+\
+\
+\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs24 \cf0 provider "aws" \{\
+  region = "your_aws_region"\
+\}\
+\
+provider "kubernetes" \{\
+  config_context_cluster = "your_eks_cluster_name"\
+\}\
+\
+resource "aws_eks_cluster" "cluster" \{\
+  name     = "your_eks_cluster_name"\
+  role_arn = aws_iam_role.cluster_role.arn\
+\
+  vpc_config \{\
+    subnet_ids = var.subnet_ids\
+  \}\
+\}\
+\
+resource "aws_eks_node_group" "workers" \{\
+  cluster_name    = aws_eks_cluster.cluster.name\
+  node_group_name = "workers"\
+  node_role_arn   = aws_iam_role.worker_role.arn\
+  subnet_ids      = var.subnet_ids\
+  instance_types  = var.instance_types\
+  scaling_config \{\
+    desired_size = 4\
+    max_size     = 10\
+    min_size     = 4\
+  \}\
+\}\
+\
+resource "aws_iam_role" "cluster_role" \{\
+  // Define the IAM role for your EKS cluster\
+\}\
+\
+resource "aws_iam_role" "worker_role" \{\
+  // Define the IAM role for your worker nodes\
+\}\
+\
+resource "kubernetes_deployment" "nginx" \{\
+  metadata \{\
+    name = "nginx-deployment"\
+    labels = \{\
+      app = "nginx"\
+    \}\
+  \}\
+\
+  spec \{\
+    replicas = 4\
+    selector \{\
+      match_labels = \{\
+        app = "nginx"\
+      \}\
+    \}\
+\
+    template \{\
+      metadata \{\
+        labels = \{\
+          app = "nginx"\
+        \}\
+      \}\
+\
+      spec \{\
+        container \{\
+          image = "nginx:latest"\
+          name  = "nginx"\
+          port \{\
+            container_port = 80\
+          \}\
+        \}\
+      \}\
+    \}\
+  \}\
+\}\
+\
+resource "kubernetes_service" "nginx" \{\
+  metadata \{\
+    name = "nginx-service"\
+  \}\
+\
+  spec \{\
+    selector = \{\
+      app = "nginx"\
+    \}\
+\
+    port \{\
+      port        = 80\
+      target_port = 80\
+    \}\
+\
+    type = "LoadBalancer"\
+  \}\
+\}\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs26 \cf0 \
+\
+\
+\
+\
+\
+\
+\
+\
+\pard\pardeftab720\sa400\partightenfactor0
+
+\f1\fs32 \cf2 \cb3 \expnd0\expndtw0\kerning0
+To deploy NGINX in Amazon EKS using Terraform, you need to have the following resources:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0\cf2 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+Amazon EKS Cluster\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+Worker nodes for the cluster\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+NGINX Deployment\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+NGINX Service\cb1 \
+\pard\pardeftab720\sa400\partightenfactor0
+\cf2 \cb3 Here's a basic example of Terraform code to achieve this:\
+\
+\
+}

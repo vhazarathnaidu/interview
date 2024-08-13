@@ -1,0 +1,206 @@
+Terraform setup
+---------------
+
+Required Softwares
+ 1. Git
+ 2. Windows Terminal (Windows 10 only)
+ 3. chocolatey
+ 4. choco install awscli -y
+ 5. choco install terraform -y
+ 
+Variables 
+-----------
+Values of variables can be passed by the user during terraform apply
+teraform apply -var <variable-name-1>=<value-1> -var <variable-name-2>=<value-2>
+
+To handle multiple varibales terraform allows to create a file .tfvars extension
+Example: terraform apply -var-file="testing.tfvars"
+
+Variables are globally access and locals are within module
+
+Modules:
+-------
+
+Remove a specific resource
+	terraform destroy -target TYPE.NAME
+
+What are the features of Terraform?
+Execution Plan
+Change Automation
+Resource Graph
+Infrastructure as code
+
+Taint: It is working now but soon it depricated, and alternate is replace
+-----
+
+Terraform replace:
+ is a flag used with the Terraform apply command and is the suggested way to force Terraform 
+ to recreate specific resources
+Taint: Deleting a particlular resource during next execution
+Replace: It is recommended to use replace as taint is deprecated.
+
+Example: terraform apply -var-file="default.tfvars" -replace="aws_instance.ec2-opn-fin-app-instance
+
+Terraform state file:
+	It will maintain the current state of infrastructure
+	using state file we can compares the current state with desired state
+	It will created in your working directory 
+	Store this State file in s3(remote state file)
+	if state file deleted/corrupted we can restore it using terraform import command.  
+Example: "terraform import <terraform resource name> <terraform resource id>"
+
+Terraform Data: 
+	Terraform writes the state data to a remote data store, which can then be shared between all members of a team.
+	Terraform data sources let you dynamically fetch data from APIs or other Terraform state backends. 
+	Examples of data sources include machine image IDs from a cloud provider or Terraform outputs from other configurations.
+
+Terraform back-end:
+	A backend defines where Terraform stores its state data files or use a backend to store state remotely.
+
+Merge state to tf
+ 	1. terraform state pull > source.tfstate and terraform state pull > destination.tfstate
+ 	2. Make a copy of both state files for backups.
+	3. Create a new, empty directory, ensures that no initialized backend configurations or other state files may conflict
+
+
+Terraform import:
+	If resources are already deployed from portal/cli/powershell/AWS SAM template/web and 
+we need to import into state file  
+
+Terraform refresh
+Run terraform refresh after making manual changes to your infrastructure resources, 
+you ensure that your Terraform state file is up-to-date and reflects the current state of your 
+infrastructure resources.
+
+Terraform datasources
+	We can use datasource resources are deployed by cli/powershell/AWS SAM template/web and those resources we need to use in terraform 
+	 
+Terraform Locals or Local Variables?
+	It is used to reduce the complexity to avoid lengthy names in multiple places
+
+Terraform provisioners:
+Terraform provisioners is used to execution of various commands or scripts on either local or remote 
+machines.
+It can also used to transfer files from a local environment to a remote one.
+There are three available provisioners:
+file (used for copying)
+local-exec (used for local operations)
+remote-exec (used for remote operations).
+The file and remote-exec provisioners need a connection block to be able to do the remote operations.
+If we want to run the provisioner to handle some logic at creation time/destroy-time provisioners using 'when'.
+
+What is the difference between Terraform null resource and provisioner?
+A Terraform null resource is a special resource that doesn’t create any infrastructure.
+It is the predecessor of terraform_data, and it acts as a mechanism to trigger actions based on input changes.
+It can be used together with provisioners to achieve different operations that are configured in them.
+
+What is the difference between User_data and provisioner in Terraform?
+User_data allows users to provide initialization scripts or configuration details that the instance 
+uses upon startup via cloud-init.
+The user_data script runs only once when the bootstrap of the instance is done.
+Provisioners, however, can run multiple times, based on the declared configuration.
+
+Terraform provider vs provisioner
+Terraform providers are plugins used to authenticate with cloud platforms, services or other tools, 
+ allowing users to create, modify, and delete resources declared in the Terraform configurations.
+Provisioners are used only for copying files or executing local or remote operations.
+
+
+Provisioners can be used inside any resource. You just have to declare the provisioner block and use
+
+drift:
+
+terraform apply --auto-approve
+terraform plan --refresh-only
+terraform apply --refresh-only
+
+Cost Optimization
+Monitoring tool agent will install by default like Nurilic agent 
+
+Locals, variables, tfvars execute sequence
+	Terraform evaluates variable values in the following order:
+		Default values specified in the configuration files.
+		Values specified in variable files (.tfvars).
+		Values specified using command-line flags (-var).
+		Values specified through environment variables.
+
+Terraform Debug: DEBUG/WARN/TRACE/INFO
+	set environment variable: TF_LOG=DEBUG/INFO/WARN/TRACE
+	tf log file name: TF_LOG_PATH=<LOG_FILE_PATH/FILE_NAME>
+Example:
+	export TF_LOG=DEBUG
+	echo TF_LOG
+	export TF_LOG_PATH="/Users/apple/Documents/source/awsdevops/terraform/logs/debug.log"
+
+Multiple environments:
+ - Create three environments tfvars like dev, stg, prod
+	tfvars example 	
+	 - instance type
+	 - s3 bucket name starts with env name 
+ - pass specific tfvars for specific environment
+
+Terraform Validation:
+
+Protect Sensitive Input Variables:
+  - Secrets Manager
+   data "aws_secrectsmanager_secret_version" "creds" {
+	secrect_id = "Secret name"
+   }
+
+Use Another module/folder
+  - Use terraform source
+    terraform {
+	source = "../anotherFolder"
+    }
+
+Multi-region:
+  - create two providers blocks
+  - one is for default with alias name
+  - Second one has alias name
+  - While create resource mention providers, if not mentioned terraform takes default provider 
+
+Terraform init
+You can use the init command for:
+
+Installing Plugins
+Installation of a Child Module
+Initialization of the backend
+How does Terraform work?
+Answer: Terraform creates an implementation plan, defines what it will do to achieve the desired state, and then executes it to build the infrastructure described. Terraform is capable of determining what changed and generating incremental execution plans that are practical as the configuration changes
+
+Check the installed version of Terraform?
+We can use terraform -version of the command to identify the version which we are running.
+
+Define null resource in Terraform?
+Answer: The null resource follows the standard resource lifecycle but takes no additional actions. The trigger argument allows for the specification of a subjective set of values that, if misrepresented, will cause the reserve to be replaced.
+
+The null resource’s primary application is as a do-nothing container for arbitrary actions performed by a provisioner.
+
+How would you recover from a failed apply in Terraform?
+Answer: You can save your configuration in version control and commit it before making any changes, and then use the features of your version control system to revert to an earlier configuration if necessary. You must always recommit the previous version code in order for it to be the new version in the version control system.
+
+What do you mean by Terragrunt, list some of its use cases?
+Answer: Terragrunt is a lightweight wrapper that adds tools for maintaining DRY configurations, working with multiple Terraform modules, and managing remote states.
+
+Use cases:
+
+Keep your Terraform code DRY
+Maintain a DRY remote state configuration.
+Keep your CLI flags DRY
+Run Terraform commands on multiple modules at the same time.
+Use multiple AWS accounts.
+
+Sentinal Policies in Terraform enterprise:
+		Sentinel Policies are rules which are enforced on Terraform runs to validate that the plan and corresponding resources are compliance with company policies.
+	1. Restrict owners of the AWS_AMI datasource
+	2. Enforce mandatory tags on taggable AWS resource
+	3. Restrict availability zones used by EC2 instance
+	4. Disallow 0.0.0.0/0 CIDR Block in security groups
+	5. Restrict instance types of EC2 instances
+	6. Require S3 buckets to be private and encrypted by KMS keys
+	7. Require VPC's to have DNS hostnames enabled
+
+
+
+
+

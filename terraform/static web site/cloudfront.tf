@@ -42,19 +42,7 @@ resource "aws_cloudfront_distribution" "website_distribution" {
     default_ttl = 86400
     max_ttl = 31536000
   }
-
-  # Optional: Add a custom domain and SSL certificate
-  # Commented out if not using a custom domain
-  # aliases {
-  #   quantity = 1
-  #   items    = ["www.example.com"]
-  # }
-
-  # viewer_certificate {
-  #   acm_certificate_arn = "arn:aws:acm:your-region:your-account-id:certificate/your-certificate-id"
-  #   ssl_support_method  = "sni-only"
-  # }
-
+  
   tags = {
     Name = "Static Website Distribution"
   }

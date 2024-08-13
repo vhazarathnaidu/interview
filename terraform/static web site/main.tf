@@ -19,7 +19,7 @@ resource "aws_s3_bucket" "static_website" {
 resource "aws_s3_bucket_object" "website_index" {
   bucket = aws_s3_bucket.static_website.bucket
   key    = "index.html"
-  source = "path/to/your/index.html"  # Path to your index.html file
+  source = "var/www/html/index.html"  # Path to your index.html file
   acl    = "public-read"
 }
 

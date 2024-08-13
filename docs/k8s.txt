@@ -1,0 +1,312 @@
+
+K8s: Kubernetes is a powerful open-source platform for automating deployment, scaling, 
+and operations of application containers across clusters of hosts. 
+
+Cluster: A Kubernetes (K8s) cluster is a group of computing nodes, or worker machines, 
+that run containerized applications.
+
+Amazon EKS cluster consists of a control plane and Amazon EC2 or Fargate compute that you run Pods 
+
+Master Node:  
+ master node is responsible for cluster management 
+ Kubernetes cluster typically has 3 master nodes, If one node fails, etcd cluster can keep working 
+    with its remaining two nodes.
+ 
+API Server: 
+	The API server is a component of the Kubernetes control plane that exposes the Kubernetes API. 
+	The API server is the front end for the Kubernetes control plane.
+
+ ClusterStore: 
+ Kube-control-manager:
+ Kube-scheduler:
+
+ Primary master: 
+ Secondary master:
+ HA master:
+
+Node (Worker):
+kubectl: 
+ This is called as k8s agent and this will communicate with master 
+ It is a command line tool which takes commands or yaml manifests as inputs
+ kubectl tool needs a  configuration file (kubeconfig), location of  configuration is ~/.kube/config
+
+Container Engine:
+
+Kube-Proxy:
+ kube-proxy is responsible for cluster level networking, 
+ while CNI is responsible for low level networking on Pod, 
+ kube-proxy which is present on each node helps in Service level abstractions such as node-port, 
+ node to pod, pod to pod, pod to service connections.
+ kube-proxy manages ipTables and makes routing possible.
+
+ 
+
+Pod: 
+A Kubernetes pod is a collection of one or more Linux® containers, 
+and is the smallest unit of a Kubernetes application. 
+Loosely Couple: One container in one pod(always prefer)
+Tightly coupled containers: If you run more than one container in pod
+
+Pod life cycle: Pending, Running, Succeeded, Failed and Unknown
+Pending: The Pod has been accepted by the Kubernetes cluster, but one or more of the containers has not 
+         been set up and made ready to run.
+Running: The Pod has been bound to a node, and all of the containers have been created and running
+Succeeded: All containers in the Pod have terminated in success, and will not be restarted
+Failed : container has terminated in failure. That is, the container either exited with non-zero status 
+         or was terminated by the system, and is not set for automatic restarting. 
+Unknown: For some reason the state of the Pod could not be obtained. This phase typically occurs due to an 
+	 error in communicating with the node where the Pod should be running.
+
+Container restart policy: 
+The spec of a Pod has a restartPolicy field with possible values Always, OnFailure, and Never. 
+The default value is Always.
+
+Container types in Pod
+   Inside Pods we can create the following types of containers, It's used to run initialization
+	init container: which are run before the app containers are started
+	container: these are main container which run the application
+	ephemeralContainers:
+	sidecarContainers: 
+
+Controller Objects: they ensure pods are running which include
+  Replica sets
+  Replication Controller (RC)
+	Replicaset is the replacement for Replication Controller.
+	RC can perform only equavality based label selections on Pods where as RS supports set based criteria
+	RS supports rolling updates which is used in  Deployments, 
+       (RS is used by Higher objects such as  Deployments and Daemonsets supporting zero downtime deployments)
+
+  Deployments: 
+    Deployment is an object that provides declarative updates and management for set of replica pods
+
+Labels
+k8s stores the data of objects in etcd and it fetches the data of related objects with the help of labels
+labels can be selected/queried by two types of queries
+	equality operators: Refer Here --- equals (=) and not equals (!=)
+	set based operators Refer Here --- in not in
+
+Services: 
+ Services is used to consistent way to access pods 
+Service Types: k8s service is of 4 types Refer Here
+  cluster ip: this gives private access with in k8s cluster
+  nodeport:k8s service can be exposed on a specific port (30000-32767) on all nodes of k8s cluster
+  load balancer: This is used generally by managed k8s clusters (EKS), This creates a  cloud load balancer
+  externalName:
+ 
+Probes in Pods: K8s gives the following probes
+liveness probe: This determines whether the application in container is started correctly. 
+	If this check fails,  k8s will try to restart the container according to restartPolicy.
+readiness probe: This determines whether the container is ready to serve requests. 
+        if this check fails, the service will not forward the requests to the pod
+startup probe: This is added for slow starting  applications, till startup probe is completed, 
+        liveness probes will not be executed.
+  Types of checks
+	exec
+	grpc
+	httpGet
+	tcpSocket
+
+Ingress: 
+  - Ingress is an API object that provide external access to service with in a cluster
+  - It acts as a layer 7 (application layer) load balancer
+  - it allowing external traffic to be routed to different services, based on HTTP/HTTPS route and rules
+  - It's a layer 7 load balancer, Based on the url/path redirect the specific application/domain
+  - For Example if you have multiple micro-services and want to expose out side, we need to use multiple 
+    load balancer, so that cost will be more. we can use this resource/service and forward to specific 
+    micro-service based on the requested url without cost 
+  - So We need to deploy the ingress component in k8s cluster 
+  - Which contains two components
+	- Ingress controller: Receive the request and process like which user, in which url it control
+	     	the request.
+	- Ingress Resource:
+		- Verify the resource list with available service and it forwards the specific service
+  - create specific namespace ingress-namespace, if required
+  - then deploy ingress-controller, pods with services yaml and ingress-resource yaml
+
+Ingress Controllers available in the market like ingress, 
+  
+StateFullSets: 
+  - If pod have issue, K8s will create new pod but it won't create same name, names will generate randomly
+  - Deployment won't follow sequence order to create pods, pods will scheduled randomly
+  - Standard Storage purpose we use PV and PVS
+  - StateFulSet will follow particular naming conversations, which starts with app name(my-app-xxxx-xxxx)
+  - It will create pods to increase number with sequential order like my-app-1, my-app-2, my-app-3...
+  - While creating pods, first k8s will create my-app-1, Once is completed then k8s will create my-app-2 pod
+  - If we reduce replicas to two, k8s will delete my-app-3 pod, It means it will delete based on creation
+  - If pods crashed/deleted, it will create recreate with same name 
+  - Statefulsets mandatory require PV and PVC
+  StatefulSets are mainly used for consistent environment
+	commonly used for deploying/managing stageful applications, 
+  	like database(MySql, PostgreSQL), messaging systems (Kafka) 
+  - HeadLess service create automatically, which allows each pod to have DNS entry
+  - It Supports both Vertical(increase CPU & Memory) & Horizontal(adding/removing) scaling
+  - Creating (first-in-first) and Deletion (Last-in-First)
+
+ConfigMaps: It is used to store configuration data and consumed by pods/other services in cluster
+  - ConfigMaps stores data as key-value pairs.
+  - It is used to store environment variables/command line arguments or any configration require for app 
+
+Secrets: Kubernetes Secrets are placeholders for sensitive information like credentials, tokens, 
+   and certificates.
+  - Secrets stores data as base64-encoded formate, and it's an additional layer of  security
+  - Types of secrets to store
+	- Opaque: Most common type and store base64-encode strings
+	- Docker-registry: credentials for docker registry, like username, password...and so on
+	- TLS: Stores TLS certificates and private keys, like tls.crt and tls.key...
+	- Service-Account: Automatically creates secrets which associate with service account
+		To accessing kubernetes API   
+
+NameSpaces: Namespaces are a way to organize clusters into virtual sub-clusters 
+  — It can be helpful when different teams or projects share a Kubernetes cluster. 
+  - Any number of namespaces are supported within a cluster.
+  - These namespaces are the foundation for multi-tenant environments.
+
+PersistentVolume (PV): It is a piece of storage in the cluster that has been provisioned by an administrator 
+or dynamically provisioned using Storage Classes.
+
+PersistentVolumeClaim (PVC) is a request for storage by a user. It is similar to a Pod. 
+   Pods consume node resources and PVCs consume PV resources. 
+   Pods can request specific levels of resources (CPU and Memory).
+
+PV vs PVC
+persistent volume (PV) is the "physical" volume on the host machine that stores your persistent data. 
+A persistent volume claim (PVC) is a request for the platform to create a PV for you, 
+ and you attach PVs to your pods via a PVC.
+
+Daemonsets: It is used to run system services and monitoring services, like backups, logs
+   It is same as replica sets, If you want run one instance of a pod on each node.
+Normally if deploy 3 replicas, 
+  it may be create all 3 pods in same nods or
+     two pods in one node other one pod in another node or
+     One pod in each node 
+
+Job: 
+ This will creates one or more pods to perform specific task and it completed successfully.
+
+Horizontal Pod Autoscaler (HPA):
+  It will adjust the replicas of deployments based on CPU utilization or customs metrics
+  When CPU/Custom metrics exceed, HPA scales up the replicas 
+  When metrics decrease, it scales down the replicas
+  Additionally we need to add metrics plugin, in AWS it is enable by default
+
+Cluster Autoscaler:
+  CA automatically adjust the size of k8s cluster by adding/removing nodes based on demands of pods
+  In AWS we can configure minimum number of nodes and maximum number of nodes in cluster
+  In AWS by default enable cluster Autoscaling 
+  This is outside of cluster
+
+LimitRange: Pod level
+  It is used to specify constraints on the resource requests and limits for pods
+  It is used for container level limit for specific namespace
+
+ResourceQuota: namespace level
+  It helps to control resource quota of all pods and containers within the namespace
+  It means the limits of resource quota allocated to that specific namespace
+  
+
+Control plane: Which contains one or more master nodes
+
+Node group: 
+
+Multi cluster:
+
+Multi control plane:
+
+Fargate: 
+
+Auto scaling:
+
+RollingUpdates and rollbacks:
+
+A blue/green deployment is a deployment strategy in which you create two separate, but identical environments. One environment (blue) is running the current application version and one environment (green) is running the new application version.
+
+Interview questions
+------------------
+CrashLoopBackOff
+
+liveness check vs readyness check
+
+Reconsilation loop & self hearing
+
+layer 4 loadbalencer
+
+
+curl -fsSL https://get.docker.com -o install-docker.sh
+sh install-docker.sh
+sudo usermod -aG docker ubuntu
+exit
+
+# Step: 2: install kubeadm, kubectl and kubelet
+
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+
+
+# step 3: install CRI
+cd /tmp
+wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.9/cri-dockerd_0.3.9.3-0.ubuntu-jammy_amd64.deb
+sudo dpkg -i cri-dockerd_0.3.9.3-0.ubuntu-jammy_amd64.deb
+
+
+# step 4: login as root in master and this will give output to enroll nodes
+kubeadm init --cri-socket unix:///var/run/cri-dockerd.sock
+
+
+#step: 5 
+
+#step: 6 install CNI network plugin falnnel in master node as root user
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+
+
+--------------------------
+For Create:
+kubectl apply -f anyname.yaml
+
+For Delete:
+kubectl detete -f anyname.yaml
+
+
+kubectl pod delete <pod-name>
+kubectl rs delete <replicaSet-name>
+
+"printenv"/"set" cmd will give you all environment variables
+
+
+
+Why not docker swam over Kubernetes
+	Can't do auto scaling
+	Does't Have GUI
+	DockerSwarn can apply rolling updates, but can't deploy automatic rollbacks
+	Kubernetes have some integrated tools for logging and monitoring
+	Kuberneties can share only share storage volumes with containers in the same pod
+
+What is Heapster
+	Heapster will do container cluster monitoring
+	Cluster wide monitoring and event data aggregation
+	It has native support for kubernetes
+
+What is kubelet
+	command line tool which takes commands or yaml manifests as inputs
+	Kubelet is a service agent that controls and maintains by watching pod specs through the kubernetes API server
+	It preserves the pod life cycle by ensuring the set of containers are all running 
+	Kebectl runs on each node that enable communication between master and slave nodes
+	enables communications between the Kubernetes API and the control plane. kubectl allows application deployment, cluster resource management, and resource monitoring.
+
+
+monitor Kubernetes clusters on AWS using tools like kops
+
+K8s operators
+
+
+
+
+
+
+
+
+
