@@ -93,17 +93,21 @@ local-exec (used for local operations)
 remote-exec (used for remote operations).
 The file and remote-exec provisioners need a connection block to be able to do the remote operations.
 If we want to run the provisioner to handle some logic at creation time/destroy-time provisioners using 'when'.
-
-What is the difference between Terraform null resource and provisioner?
-A Terraform null resource is a special resource that doesn’t create any infrastructure.
 It is the predecessor of terraform_data, and it acts as a mechanism to trigger actions based on input changes.
 It can be used together with provisioners to achieve different operations that are configured in them.
 
+Terraform null resource?
+  A Terraform null resource is a special resource that doesn’t create any infrastructure.
+  NULL resource used for Bootstrapping, Initializations, Executing configuration changes, and Managing complex workflows
+  For example, a user can use a null_resource instance to create three EC2 instances, gather data about all three instances, 
+    and execute a single action that affects all three instances
+
+
 What is the difference between User_data and provisioner in Terraform?
-User_data allows users to provide initialization scripts or configuration details that the instance 
-uses upon startup via cloud-init.
-The user_data script runs only once when the bootstrap of the instance is done.
-Provisioners, however, can run multiple times, based on the declared configuration.
+  User_data allows users to provide initialization scripts or configuration details that the instance 
+  uses upon startup via cloud-init.
+  The user_data script runs only once when the bootstrap of the instance is done.
+  Provisioners, however, can run multiple times, based on the declared configuration.
 
 Terraform provider vs provisioner
 Terraform providers are plugins used to authenticate with cloud platforms, services or other tools, 
