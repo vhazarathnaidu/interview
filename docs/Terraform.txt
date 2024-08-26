@@ -78,6 +78,11 @@ Terraform datasources
 Terraform Locals or Local Variables?
 	It is used to reduce the complexity to avoid lengthy names in multiple places
 
+Terraform Lock
+   To lock your Terraform state, run tflock command in the same directory where you run the terraform init command.
+   If you want to check if locked successfully , use terraform plan command.
+   If you want to unlock, use terraform force-unlock command.
+
 Terraform provisioners:
 Terraform provisioners is used to execution of various commands or scripts on either local or remote 
 machines.

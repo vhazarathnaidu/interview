@@ -29,10 +29,8 @@ resource "aws_api_gateway_method_settings" "example" {
   method_path = "example/GET"
 
   settings {
-    throttling {
-      burst_limit = 100
-      rate_limit  = 50
-    }
+      throttling_burst_limit = 100
+      throttling_rate_limit  = 50
   }
 }
 
@@ -60,11 +58,11 @@ resource "aws_api_gateway_usage_plan" "example" {
     api_id   = aws_api_gateway_rest_api.example.id
     stage    = aws_api_gateway_stage.example.stage_name
   }
-  throttle {
+  throttle_settings {
     burst_limit = 200
     rate_limit  = 100
   }
-  quota {
+  quota_settings  {
     limit  = 10000
     period = "MONTH"
   }

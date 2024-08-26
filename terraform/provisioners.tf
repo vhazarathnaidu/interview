@@ -68,14 +68,14 @@ resource "aws_instance" "my_vm" {
 # Local-exec example
 
 resource "aws_instance" "my_vm" {
- ami           = var.ami //Amazon Linux AMI
- instance_type = var.instance_type
+ ami           = "var.ami" //Amazon Linux AMI
+ instance_type = "var.instance_type"
  
  provisioner "local-exec" {
    command = "echo ${self.private_ip} >> private_ip.txt"
  }
  
  tags = {
-   Name = var.name_tag,
+   Name = "var.name_tag",
  }
 }
