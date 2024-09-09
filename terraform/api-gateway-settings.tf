@@ -58,9 +58,9 @@ resource "aws_api_gateway_usage_plan" "example" {
     api_id   = aws_api_gateway_rest_api.example.id
     stage    = aws_api_gateway_stage.example.stage_name
   }
-  throttle_settings {
-    burst_limit = 200
-    rate_limit  = 100
+  throttle_settings { 
+    burst_limit = 200 //maximum number of times can be called per second
+    rate_limit  = 100 // average number of times API Gateway can be called per second
   }
   quota_settings  {
     limit  = 10000

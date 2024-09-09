@@ -1,11 +1,46 @@
 Terraform dynamic Blocks
-
-
-
+EKS Cluster auto scaling
+Event driven architecture
+AWS glue
+EMR
+Ancible
 Elasticsearch
 Transitgatway
 Including A/B, Canary, Blue/Green deployment patterns.
 Control tower
-
-
+Package manager
+service mesh
+SAM Template
+GitLab
+tcp vs udp
+layer caching vs layer
+DataDog
+Splunk
+Ansible 
 GitHub Copilot - Your AI pair programmer in vs code
+ArgoCD
+
+
+AWS
+1. EC2 needs access to s3, how do you make sure EC2 has required permissions?	
+2. Why do we use trust relationship in IAM role.	
+3. How do you give access to particular objects in s3.	
+4. What is the difference between internet gateway and NAT gateway	
+5. Why do we use VPC endpoints?	
+Terraform		
+1. What is the difference between Terraform and Ansible	
+2	How do you destroy specific resource in terraform	
+3	How to use resources that are created manually in terraform	
+4	What is the purpose of modules in terraform	
+Kubernetes	
+1	What is the different services in Kubernetes	
+2	What is the useful for Daemonset	
+3	If pod is not in running state , how do you check the logs	
+4	How do you check DB connection from Kubernetes cluster	
+5	What is path based routing in kubernetes?
+
+
+cmrf contact number
+medicover hospital, nellore 
+Satish 
+c/o (8008104200)
