@@ -17,3 +17,5 @@ ISTIO:
   
 
 Service mesh vs ingress
+
+------------

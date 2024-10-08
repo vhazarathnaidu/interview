@@ -1,0 +1,42 @@
+A landing zone is a well-architected, multi-account AWS environment based on security and compliance best practices. AWS Control Tower automates the setup of a new landing zone using best-practices blueprints for identity, federated access, and account structure.
+
+AWS Control Tower
+	A service control console that helps IT admins manage security compliance and ensure best practices. It automates the creation of landing zones, which are multi-account environments based on best practices.
+
+AWS landing zone
+	A multi-account environment that serves as a template for new user profiles, accounts, and environments. It's especially useful for organizations that are migrating to the cloud or revamping DevOps processes.
+
+AWS Control Tower creates accounts
+	When you set up a landing zone, AWS Control Tower creates two accounts in your organization: an audit account and a logging account. These accounts record actions taken by your team. 
+The Root
+	The Root is a container for the management account, and for all OUs and accounts in your organization. You can't delete the Root, and you can't govern enrolled accounts at the Root level. 
+Account types
+	Production accounts control how your services are maintained, deployed, and developed. Sandbox accounts are used for developers to try out AWS cloud services in a controlled environment. Workload accounts handle most of your production and non-production workloads.
+
+Account Vending Machine	
+	As part of the account provisioning process, the Account Vending Machine should grant the relevant developers access to the new accounts via the authentication and authorization system in your account baselines
+		- Create new accounts in AWS Organization with standard baselines and guardrails 
+		- Allow users to rapidly request new accounts and other changes 
+		- Enforce controls across the estate, such as default account guardrails and network connectivity
+
+AWS Account Factory
+	- Also known as an AVM, this tool is an abstraction built on top of AWS Service Catalog products. It can: 
+	- Create pre-approved baselines and configuration options 
+	- Provision new accounts 
+	- Automate the application of controls and policies to accounts 
+	- Respond to account request Terraform configurations
+	
+AWS Account Factory and AWS Account Vending Machine (AVM) are both tools that can create and provision AWS accounts:
+
+
+Service Control Policies
+	It is orgainzation policy that you can manage permisions in your orgainzation. 
+	It can be applied to account/ou level
+	to control IAM user/roles
+    Flow: Explicit Deny ---> SCP ---> Permission boundries ---> IAM policy
+	SCP never grant permission
+	SCP can be attached to account or OU levels
+	SCP has highest level of priority
+	SCP default policy is FullAccess, which is not deny anything
+	SCP supports conditions
+	
