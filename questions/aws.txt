@@ -1,0 +1,15 @@
+1. How do you make a subnet private?
+  probably your subnet is using a vpc's main route table, which has the route to IGW. 
+  In that case, 
+    create a new route table (by default it will not have a route to IGW) and associate it with the new subnet. 
+	This way your new subnet will use the new route table without IGW, and will be "private"
+
+2. EC2 needs access to s3, how do you make sure EC2 has required permissions?	
+   Create an AWS Identity and Access Management (IAM) profile role that grants access to Amazon S3
+   Attach the IAM instance profile to the EC2 instance
+   Permissions on the S3 bucket or use the AmazonS3ReadOnlyAccess or AmazonS3FullAccess managed IAM policy to allow EC2 access to all Amazon S3 buckets
+   
+3. VPC Gateway endpoints to Amazon S3   
+   Gateway VPC endpoints provide reliable connectivity to Amazon S3 and DynamoDB without an internet gateway or NAT
+   If private EC2 instance with connectivity to Amazon S3 with gateway virtual private cloud (VPC) endpoint for Network connectivity between the EC2 instance and Amazon S3 
+   Add it as a target in your route table for traffic destined from your VPC to Amazon S3.

@@ -17,3 +17,16 @@ variable "azs" {
     default = ["us-east-1a", "us-east-1b", "us-east-1c"]
     description = "availability zones"
 }
+
+variable "instance_count" {
+  default = 2
+}
+
+variable "ami" {
+  default = "ami-04169656fea786776"
+  
+}
+
+variable "instance_type" {
+  default = "t2.micro"
+}

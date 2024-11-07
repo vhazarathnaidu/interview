@@ -40,3 +40,8 @@ Service Control Policies
 	SCP default policy is FullAccess, which is not deny anything
 	SCP supports conditions
 	
+Guardrails: 
+	High level rules for additional controlling and securing of your acconts
+	Preventive: which ensures complients of your account and It dissallow if policy violation is happenning
+	Detective: Detects non-compliance of resources and getting an alret to the dashboard
+	

@@ -128,7 +128,7 @@ Ingress Controllers available in the market like ingress,
 StateFullSets: 
   - If pod have issue, K8s will create new pod but it won't create same name, names will generate randomly
   - Deployment won't follow sequence order to create pods, pods will scheduled randomly
-  - Standard Storage purpose we use PV and PVS
+  - Standard Storage purpose we use PV and PVC
   - StateFulSet will follow particular naming conversations, which starts with app name(my-app-xxxx-xxxx)
   - It will create pods to increase number with sequential order like my-app-1, my-app-2, my-app-3...
   - While creating pods, first k8s will create my-app-1, Once is completed then k8s will create my-app-2 pod

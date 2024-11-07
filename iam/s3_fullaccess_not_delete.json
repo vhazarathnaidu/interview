@@ -1,0 +1,16 @@
+{
+    "Version": "2012-10-17",
+	"Statement": [
+        {
+            "Effect": "Allow",
+            "Action": ["s3:List*", "s3:Describe*", "s3:Get*"],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Deny",
+            "Action": ["s3:Delete*"],
+            "Resource": "*"
+        }
+
+    ]
+}

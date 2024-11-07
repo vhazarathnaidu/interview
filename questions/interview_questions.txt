@@ -1,7 +1,22 @@
-Terraform dynamic Blocks
-EKS Cluster auto scaling
-Event driven architecture
+Terraform dynamic Blocks : using loops, 
+
+Karpenter vs EKS Cluster auto scaling:
+  Karpenter offers faster scaling and flexibility in instance types, but with less control over placement and deprovisioning. 
+  Cluster Autoscaler provides more granular control and broader cloud support, but with slightly slower scaling.
+
+Event driven architecture: 
+  An event-driven architecture uses events to trigger and communicate between decoupled services and is common in modern applications built with microservices. An event is a change in state, or an update, like an item being placed in a shopping cart on an e-commerce website.
+  
 AWS glue
+  AWS Glue is a fully managed extract, transform, and load (ETL) service that helps you to prepare and load your data for analytics.
+  AWS Glue Data Quality automates data quality rule creation, management, and monitoring to help ensure high quality data across your data lakes and pipelines. 
+
+  
+AWS Landing Zone
+Control Tower
+Aws config
+AWS Security & Complience
+  
 EMR
 Ancible
 Elasticsearch

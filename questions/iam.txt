@@ -1,0 +1,37 @@
+IAM Policies
+  IAM Policy defines the permissions which can be assigned to user or role or group
+  AWS Provides built in policies and it also gives us the option to create custom policies.
+  AWS IAM uses effective permissions by combining policies at group and user level
+  When combined if there is a conflict between allow and deny, deny is always the winner.
+
+IAM Groups
+  Create IAM Groups to manage permissions for multiple users at one place
+
+AWS Policy contains
+	AWS Policy is collection of rules referrred a statements which will have
+    Actions: what are the available actions AWS supports (allow/deny)
+	Resources: aws resources
+    Conditionss: 
+	
+Amazon Resource Name (ARN)
+	For any resource created in AWS in any account ARN refers to a unique identifier.
+	ARN can be calculated by some patterns.
+	
+	arn:${Partition}:ec2:${Region}:${Account}:elastic-ip/${AllocationId}
+	arn:aws:ec2:ap-south-1:123456789012:elastic-ip/eip-12345
+
+IAM Policy Syntax
+-----------------
+Version block: Normally we use latest date and it is not mandatory
+Id block: Which is unic idntifier for our reference and it is not mandatory field
+statement block: Array of statements and it is mandatory
+Effect: Allow or deny
+
+Allow: What are the activities actions needs to provide specific resource access
+
+Resource: 
+
+principle: Refers to users or groups or roles
+
+IAM policy Similator: 
+  To validate a policy
