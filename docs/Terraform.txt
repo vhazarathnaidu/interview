@@ -21,36 +21,83 @@ Variables are globally access and locals are within module
 Modules:
 -------
 
-Remove a specific resource
-	terraform destroy -target TYPE.NAME
+What is a Terraform module?
+	A Terraform module is a collection of standard configuration files in a dedicated directory. 
+	Terraform modules encapsulate groups of resources dedicated to one task
+	Reduce amount of code you have develop for similar infrastructure components.
+
+What is the difference between resources and modules in Terraform?
+	A resource in Terraform describes a piece of infrastructure that is going to be created (e.g., a VPC, a subnet, an ec2 instance, etc)
+	Module is a collection of resources that are used together to achieve a reusable use case.
+
+Types of Terraform modules
+    Modules are used to create reusable components inside your infrastructure. There are primarily two types of modules root and child modules
+	Another two different types as well local and published modules
+
+Root module:
+	The root module consists of all the resources defined in the .tf files in a Terraform configuration
+	Terraform configurations have their own root module.
+	
+Child Modules:
+	Every module can call other modules, and all of the modules called inside another module are considered child modules.
+	module "webservers" {
+	   source = "../webservers"
+	}
+
+Local module
+	Local module is a module that wasn’t published in any registry and when it is sourced, it is using the path to that particular module.
+	
+Published module:
+	A published module refers to a module that has been pushed to a Terraform Registry, GIT and has a tag associated with it. 
+	When a published module is sourced, the URL of that module is used either from the registry or from the GIT itself.
+	
+When should you use Terraform modules?
+	Terraform code is to keep reusability in mind. 
+	Same configuration over and over again will be cumbersome
+	
+What problems do Terraform modules solve?
+	1. Code Repetition
+	2. Lack of Code Clarity
+	3. Lack of Compliance
+	4. Avoid Human Error
+
+--> Remove a specific resource
+		terraform destroy -target TYPE.NAME
 
 What are the features of Terraform?
-Execution Plan
-Change Automation
-Resource Graph
-Infrastructure as code
+	Execution Plan
+	Change Automation
+	Resource Graph: The terraform graph command is used to generate a visual representation of the dependency graph of your infrastructure
+	Infrastructure as code
 
 Taint: It is working now but soon it depricated, and alternate is replace
 -----
 
 Terraform replace:
- is a flag used with the Terraform apply command and is the suggested way to force Terraform 
- to recreate specific resources
+	It is a flag used with the Terraform apply command and is the suggested way to force Terraform to recreate specific resources
 Taint: Deleting a particlular resource during next execution
 Replace: It is recommended to use replace as taint is deprecated.
 
-Example: terraform apply -var-file="default.tfvars" -replace="aws_instance.ec2-opn-fin-app-instance
+Example: terraform apply -var-file="default.tfvars" -replace="aws_instance.ec2-opn-fin-app-instance"
 
 Terraform state file:
 	It will maintain the current state of infrastructure
-	using state file we can compares the current state with desired state
+	Using state file we can compares the current state with desired state
 	It will created in your working directory 
 	Store this State file in s3(remote state file)
 	if state file deleted/corrupted we can restore it using terraform import command.  
 Example: "terraform import <terraform resource name> <terraform resource id>"
 
+Terraform state file lock:
+	1.Terraform state file locking is a mechanism that prevents multiple users or processes from accessing the same state file at the same time.
+	2.This ensures that only one user or process can make changes to the state at a given time.
+	3.Terraform automatically locks the state file when operation is performed.
+	4.Once lock is created when a Terraform action starts and its automatically released once the action completes. 
+	5.You can disable state locking for most commands with the -lock flag, but it is not recommended.
+	6.You can use force-unlock command to manually unlock the state if unlocking failed. This command removes the lock but it will not modify your infrastructure.
+
 Terraform Data: 
-	Terraform writes the state data to a remote data store, which can then be shared between all members of a team.
+	Terraform writes the state data to a remote data store, which can be shared between all members of a team.
 	Terraform data sources let you dynamically fetch data from APIs or other Terraform state backends. 
 	Examples of data sources include machine image IDs from a cloud provider or Terraform outputs from other configurations.
 
@@ -77,35 +124,39 @@ Terraform datasources
 	 
 Terraform Locals or Local Variables?
 	It is used to reduce the complexity to avoid lengthy names in multiple places
+	The main difference between locals and local variables is their scope.
+	Locals are only accessible within the local module, while Terraform variables can be scoped globally
+	Locals do not change their value once assigned, while variable values can be modified via expressions. 
 
 Terraform Lock
    To lock your Terraform state, run tflock command in the same directory where you run the terraform init command.
    If you want to check if locked successfully , use terraform plan command.
    If you want to unlock, use terraform force-unlock command.
+   
+Terraform dynamic Blocks : using loops,
 
 Terraform provisioners:
-Terraform provisioners is used to execution of various commands or scripts on either local or remote 
-machines.
-It can also used to transfer files from a local environment to a remote one.
-There are three available provisioners:
-file (used for copying)
-local-exec (used for local operations)
-remote-exec (used for remote operations).
-The file and remote-exec provisioners need a connection block to be able to do the remote operations.
-If we want to run the provisioner to handle some logic at creation time/destroy-time provisioners using 'when'.
-It is the predecessor of terraform_data, and it acts as a mechanism to trigger actions based on input changes.
-It can be used together with provisioners to achieve different operations that are configured in them.
+	Terraform provisioners is used to execution of various commands or scripts on either local or remote machines.
+	It can also used to transfer files from a local environment to a remote one.
+	There are three available provisioners:
+		file (used for copying)
+		local-exec (used for local operations)
+		remote-exec (used for remote operations).
+	The file and remote-exec provisioners need a connection block to be able to do the remote operations.
+	If we want to run the provisioner to handle some logic at creation time/destroy-time provisioners using 'when'.
+	It is the predecessor of terraform_data, and it acts as a mechanism to trigger actions based on input changes.
+	It can be used together with provisioners to achieve different operations that are configured in them.
 
 Terraform null resource?
   A Terraform null resource is a special resource that doesn’t create any infrastructure.
   NULL resource used for Bootstrapping, Initializations, Executing configuration changes, and Managing complex workflows
+  The trigger argument allows for the specification of a subjective set of values that, if misrepresented, will cause the reserve to be replaced.
   For example, a user can use a null_resource instance to create three EC2 instances, gather data about all three instances, 
     and execute a single action that affects all three instances
 
 
 What is the difference between User_data and provisioner in Terraform?
-  User_data allows users to provide initialization scripts or configuration details that the instance 
-  uses upon startup via cloud-init.
+  User_data allows users to provide initialization scripts or configuration details that the instance uses upon startup via cloud-init.
   The user_data script runs only once when the bootstrap of the instance is done.
   Provisioners, however, can run multiple times, based on the declared configuration.
 
@@ -169,13 +220,13 @@ Multi-region:
   - While create resource mention providers, if not mentioned terraform takes default provider 
 
 Terraform init
-You can use the init command for:
-
-Installing Plugins
-Installation of a Child Module
-Initialization of the backend
+	You can use the init command for:
+	Installing Plugins
+	Installation of a Child Module
+	Initialization of the backend
+	
 How does Terraform work?
-Answer: Terraform creates an implementation plan, defines what it will do to achieve the desired state, and then executes it to build the infrastructure described. Terraform is capable of determining what changed and generating incremental execution plans that are practical as the configuration changes
+	Answer: Terraform creates an implementation plan, defines what it will do to achieve the desired state, and then executes it to build the infrastructure described. Terraform is capable of determining what changed and generating incremental execution plans that are practical as the configuration changes
 
 Check the installed version of Terraform?
 We can use terraform -version of the command to identify the version which we are running.
@@ -190,14 +241,12 @@ Answer: You can save your configuration in version control and commit it before 
 
 What do you mean by Terragrunt, list some of its use cases?
 Answer: Terragrunt is a lightweight wrapper that adds tools for maintaining DRY configurations, working with multiple Terraform modules, and managing remote states.
-
 Use cases:
-
-Keep your Terraform code DRY
-Maintain a DRY remote state configuration.
-Keep your CLI flags DRY
-Run Terraform commands on multiple modules at the same time.
-Use multiple AWS accounts.
+	Keep your Terraform code DRY
+	Maintain a DRY remote state configuration.
+	Keep your CLI flags DRY
+	Run Terraform commands on multiple modules at the same time.
+	Use multiple AWS accounts.
 
 Sentinal Policies in Terraform enterprise:
 		Sentinel Policies are rules which are enforced on Terraform runs to validate that the plan and corresponding resources are compliance with company policies.

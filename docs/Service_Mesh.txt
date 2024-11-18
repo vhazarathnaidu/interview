@@ -5,9 +5,11 @@ https://github.com/iam-veeramalla/istio-guide
 
 Service Mesh helps to manage traffic management of kubernetes cluster, Specially EAST-WEST traffic management
 
-EAST-WEST traffic management:
-  
+EAST-WEST traffic:
+  East-west traffic in Kubernetes is the communication between pods within a cluster. 
 
+A service mesh can be used to secure east-west traffic. It acts as a proxy between containers to implement security rules
+  
 Admision Controllers
 Sidecar containers
 ISTIO: 
